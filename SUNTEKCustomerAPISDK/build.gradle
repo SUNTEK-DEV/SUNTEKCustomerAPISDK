@@ -93,8 +93,35 @@ afterEvaluate {
         }
     }
     
-    // 创建一个 install 任务（JitPack 会自动识别并执行）
-    // 这个任务会先构建 AAR，然后发布到本地 Maven 仓库
+    // 关键：让 assembleRelease 完成后自动执行 publishToMavenLocal
+    // 这样无论 JitPack 运行什么命令，只要运行了 assembleRelease，就会自动发布
+    tasks.named('assembleRelease').configure {
+        finalizedBy 'publishToMavenLocal'
+    }
+    
+    // 确保 publishToMavenLocal 完成后，将 POM 文件复制到 build 目录（JitPack 会查找）
+    tasks.named('publishToMavenLocal').configure {
+        doLast {
+            // 从本地 Maven 仓库复制 POM 文件到 build 目录
+            def mavenRepo = new File(System.getProperty('user.home'), '.m2/repository')
+            def groupPath = 'com/github/SUNTEK-DEV'
+            def artifactId = 'SUNTEKCustomerAPISDK'
+            def version = android.defaultConfig.versionName
+            def pomFile = new File(mavenRepo, "${groupPath}/${artifactId}/${version}/${artifactId}-${version}.pom")
+            
+            if (pomFile.exists()) {
+                def buildPomFile = new File(buildDir, 'pom.xml')
+                pomFile.withInputStream { input ->
+                    buildPomFile.withOutputStream { output ->
+                        output << input
+                    }
+                }
+                println "Copied POM file to ${buildPomFile.absolutePath}"
+            }
+        }
+    }
+    
+    // 创建一个 install 任务（JitPack 可能会识别）
     task install(dependsOn: ['assembleRelease', 'publishToMavenLocal']) {
         description = 'Install the library to local Maven repository (for JitPack)'
         group = 'publishing'

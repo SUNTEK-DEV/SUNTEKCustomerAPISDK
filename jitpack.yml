@@ -5,6 +5,3 @@ before_install:
   - echo "android.useAndroidX=true" >> gradle.properties
   - echo "android.enableJetifier=true" >> gradle.properties
 
-install:
-  - ./gradlew :SUNTEKCustomerAPISDK:install
-
