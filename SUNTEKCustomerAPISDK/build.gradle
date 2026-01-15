@@ -21,6 +21,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+        }
     }
 
     compileOptions {
@@ -53,15 +56,4 @@ dependencies {
 //    from dokkaJavadoc.outputDirectory
 //    archiveClassifier.set("javadoc")
 //}
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            release(MavenPublication) {
-//                from components.release
-//                groupId = 'com.github.SUNTEK-DEV'
-//                artifactId = 'SUNTEKCustomerAPISDK'
-//                version = 'V1.3'
-//            }
-//        }
-//    }
-//}
+
