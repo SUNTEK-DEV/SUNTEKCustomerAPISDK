@@ -4,3 +4,6 @@ jdk:
 
 install:
   - ./gradlew :SUNTEKCustomerAPISDK:assembleRelease
+
+artifact:
+  - SUNTEKCustomerAPISDK/build/outputs/aar/SUNTEKCustomerAPISDK-release.aar
