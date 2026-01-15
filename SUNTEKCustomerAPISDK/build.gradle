@@ -57,3 +57,18 @@ dependencies {
 //    archiveClassifier.set("javadoc")
 //}
 
+// 配置 Maven 发布
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.SUNTEK-DEV'
+                artifactId = 'SUNTEKCustomerAPISDK'
+                version = android.defaultConfig.versionName
+            }
+        }
+    }
+}
+

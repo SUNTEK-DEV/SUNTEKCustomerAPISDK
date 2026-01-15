@@ -1,0 +1,11 @@
+jdk:
+  - openjdk17
+
+before_install:
+  - echo "android.useAndroidX=true" >> gradle.properties
+  - echo "android.enableJetifier=true" >> gradle.properties
+
+build:
+  commands:
+    - ./gradlew :SUNTEKCustomerAPISDK:publishToMavenLocal
+
