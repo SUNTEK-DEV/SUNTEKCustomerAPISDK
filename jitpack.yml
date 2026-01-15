@@ -1,12 +1,14 @@
 # jitpack.yml
+# .jitpack.yml
 jdk:
   - openjdk17
 
+before_install:
+  - echo "android.useAndroidX=true" >> gradle.properties
+  - echo "android.enableJetifier=true" >> gradle.properties
+
 install:
   - ./gradlew :SUNTEKCustomerAPISDK:assembleRelease
-  - cp SUNTEKCustomerAPISDK/build/outputs/aar/SUNTEKCustomerAPISDK-release.aar .
-  - ls -laR .          # 👈 打印完整目录结构（关键！）
-  - if [ -f SUNTEKCustomerAPISDK-release.aar ]; then echo "✅ AAR FOUND!"; else echo "❌ AAR MISSING!"; fi
 
 artifact:
-  - "**/*.aar"
+  - SUNTEKCustomerAPISDK/build/outputs/aar/SUNTEKCustomerAPISDK-release.aar
