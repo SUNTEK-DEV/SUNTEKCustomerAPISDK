@@ -93,6 +93,11 @@ afterEvaluate {
         }
     }
     
+    // 关键：确保 publishToMavenLocal 依赖于 bundleReleaseAar（生成 AAR 文件）
+    tasks.named('publishReleasePublicationToMavenLocal').configure {
+        dependsOn 'bundleReleaseAar'
+    }
+    
     // 关键：让 assembleRelease 完成后自动执行 publishToMavenLocal
     // 这样无论 JitPack 运行什么命令，只要运行了 assembleRelease，就会自动发布
     tasks.named('assembleRelease').configure {
