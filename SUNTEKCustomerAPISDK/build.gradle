@@ -62,11 +62,32 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                // 使用 AAR 文件路径（assembleRelease 会在 publishToMavenLocal 之前执行）
+                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
+                    classifier = null
+                    extension = 'aar'
+                }
 
                 groupId = 'com.github.SUNTEK-DEV'
                 artifactId = 'SUNTEKCustomerAPISDK'
                 version = android.defaultConfig.versionName
+
+                // 配置 POM 依赖
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    
+                    // 添加所有 implementation 依赖
+                    configurations.implementation.allDependencies.each { dep ->
+                        if (dep.group != null && dep.name != null && !dep.name.contains('unspecified')) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', dep.group)
+                            dependencyNode.appendNode('artifactId', dep.name)
+                            if (dep.version != null) {
+                                dependencyNode.appendNode('version', dep.version)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
