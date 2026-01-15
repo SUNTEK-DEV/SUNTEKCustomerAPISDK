@@ -57,13 +57,9 @@ dependencies {
 //    archiveClassifier.set("javadoc")
 //}
 
-// 配置 Maven 发布
+// 配置 Maven 发布（用于 JitPack）
 afterEvaluate {
-    // 确保 publishToMavenLocal 依赖于 assembleRelease
-    tasks.named('publishToMavenLocal').configure {
-        dependsOn 'assembleRelease'
-    }
-    
+    // 配置 Maven 发布（maven-publish）
     publishing {
         publications {
             release(MavenPublication) {
@@ -95,6 +91,13 @@ afterEvaluate {
                 }
             }
         }
+    }
+    
+    // 创建一个 install 任务（JitPack 会自动识别并执行）
+    // 这个任务会先构建 AAR，然后发布到本地 Maven 仓库
+    task install(dependsOn: ['assembleRelease', 'publishToMavenLocal']) {
+        description = 'Install the library to local Maven repository (for JitPack)'
+        group = 'publishing'
     }
 }
 

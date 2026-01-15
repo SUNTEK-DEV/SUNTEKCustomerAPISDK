@@ -6,5 +6,5 @@ before_install:
   - echo "android.enableJetifier=true" >> gradle.properties
 
 install:
-  - ./gradlew :SUNTEKCustomerAPISDK:publishToMavenLocal
+  - ./gradlew :SUNTEKCustomerAPISDK:install
 
