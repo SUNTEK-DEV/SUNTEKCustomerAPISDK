@@ -5,6 +5,8 @@ jdk:
 install:
   - ./gradlew :SUNTEKCustomerAPISDK:assembleRelease
   - cp SUNTEKCustomerAPISDK/build/outputs/aar/SUNTEKCustomerAPISDK-release.aar .
+  - ls -laR .          # 👈 打印完整目录结构（关键！）
+  - if [ -f SUNTEKCustomerAPISDK-release.aar ]; then echo "✅ AAR FOUND!"; else echo "❌ AAR MISSING!"; fi
 
 artifact:
-  - SUNTEKCustomerAPISDK-release.aar
+  - "**/*.aar"
