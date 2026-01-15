@@ -7,4 +7,4 @@ before_install:
   - echo "android.enableJetifier=true" >> gradle.properties
 
 install:
-  - ./gradlew :SUNTEKCustomerAPISDK:assembleReleaseSUNTEKCustomerAPISDK-release.aar
+  - ./gradlew :SUNTEKCustomerAPISDK:assembleRelease
