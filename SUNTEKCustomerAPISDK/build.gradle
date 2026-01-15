@@ -1,0 +1,67 @@
+plugins {
+    id 'com.android.library' version '8.2.2'
+    id 'maven-publish'
+}
+
+android {
+    namespace 'com.example.mylibrary'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    // 扫描 libs 目录下的所有 .jar 和 .aar 文件
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
+    implementation 'com.github.SUNTEK-DEV:SdkApiJar:v8.0'
+    // 或者，如果只想引入那一个特定的文件
+    // implementation files('libs/SdkApiJarV1.250217.0851.aar')
+}
+
+// 配置源码任务
+//task sourceJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    archiveClassifier.set("sources")
+//}
+
+// 配置Javadoc任务（可选）
+//task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+//    from dokkaJavadoc.outputDirectory
+//    archiveClassifier.set("javadoc")
+//}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.SUNTEK-DEV'
+                artifactId = 'SUNTEKCustomerAPISDK'
+                version = 'V1.3'
+            }
+        }
+    }
+}
