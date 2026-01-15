@@ -59,10 +59,15 @@ dependencies {
 
 // 配置 Maven 发布
 afterEvaluate {
+    // 确保 publishToMavenLocal 依赖于 assembleRelease
+    tasks.named('publishToMavenLocal').configure {
+        dependsOn 'assembleRelease'
+    }
+    
     publishing {
         publications {
             release(MavenPublication) {
-                // 使用 AAR 文件路径（assembleRelease 会在 publishToMavenLocal 之前执行）
+                // 使用 AAR 文件路径
                 artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
                     classifier = null
                     extension = 'aar'
