@@ -24,4 +24,5 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+maven-publish = { id = "maven-publish", version = "8.4" } # maven-publish 插件无需版本，但可显式声明
 
