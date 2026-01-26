@@ -89,8 +89,8 @@ public class SdkApiJarImpl implements IsdkAPI {
         return "";
     }
 
-    @Override
-    public boolean setBrightness(int brightness) {
-        return false;
-    }
+//    @Override
+//    public boolean setBrightness(int brightness) {
+//        return false;
+//    }
 }

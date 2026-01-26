@@ -222,8 +222,8 @@ public class C9DSdkImpl implements IsdkAPI {
         return "";//待实现
     }
 
-    @Override
-    public boolean setBrightness(int brightness) {
-        return false;
-    }
+//    @Override
+//    public boolean setBrightness(int brightness) {
+//        return false;
+//    }
 } 

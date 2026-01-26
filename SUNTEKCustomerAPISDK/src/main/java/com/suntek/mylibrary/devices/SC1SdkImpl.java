@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SC1SdkImpl implements IsdkAPI {
     private static final String TAG = "SC1SdkImpl";
-    private static final long READY_TIMEOUT_MS = 5000; // 等待最大 5 秒，可调
+
     private SdkApi sdkApi;
     private Context context;
     private boolean isInitialized = false;
@@ -49,7 +49,7 @@ public class SC1SdkImpl implements IsdkAPI {
             new Thread(() -> {
                 try {
                     // 这里可以简单 sleep 一段时间，也可以轮询 getServiceConnectionStatus()
-                    Thread.sleep(3000); // 你之前经验上要等 3 秒
+                    Thread.sleep(1000); // 你之前经验上要等 3 秒
 
                     // 这里可以加个判断，例如：
                     boolean status = sdkApi.getServiceConnectionStatus();
@@ -82,6 +82,37 @@ public class SC1SdkImpl implements IsdkAPI {
         return true;
     }
 
+    /**
+     * 等待SDK就绪（阻塞调用，最多等待指定时间）
+     * @param timeoutMs 超时时间（毫秒）
+     * @return 是否就绪
+     */
+    public boolean awaitReady(long timeoutMs) {
+        if (isReady) {
+            return true;
+        }
+        try {
+            boolean result = readyLatch.await(timeoutMs, TimeUnit.MILLISECONDS);
+            if (result && isReady) {
+                Log.d(TAG, "SDK已就绪");
+                return true;
+            } else {
+                Log.w(TAG, "等待SDK就绪超时或失败");
+                return false;
+            }
+        } catch (InterruptedException e) {
+            Log.e(TAG, "等待SDK就绪被中断", e);
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    /**
+     * 等待SDK就绪（使用默认超时时间）
+     * @return 是否就绪
+     */
+
+
     @Override
     public boolean checkSystemStatus() {
         return false;
@@ -100,10 +131,22 @@ public class SC1SdkImpl implements IsdkAPI {
 
     @Override
     public String getSerialNumber() {
-        //awaitReady();  // 在这里阻塞等待就绪（非 UI 线程调用）
-        if (!checkReady()) {
-            return "未知";   // 或者 "未就绪" / "获取失败"
-        }
+        // 如果未就绪，尝试等待（但不在UI线程阻塞）
+//        if (!checkReady()) {
+//            // 在非UI线程中可以等待，但在UI线程中直接返回
+//            if (Looper.myLooper() != Looper.getMainLooper()) {
+//                // 非UI线程，可以等待
+//                if (awaitReady(3000)) {
+//                    // 等待成功，继续执行
+//                } else {
+//                    return "未就绪";
+//                }
+//            } else {
+//                // UI线程，不阻塞，直接返回
+//                return "未就绪";
+//            }
+//        }
+
         try {
             String sn = sdkApi.DeviceInfo().getSerialNumber();
             return sn != null ? sn : "未知";
@@ -113,9 +156,32 @@ public class SC1SdkImpl implements IsdkAPI {
         }
     }
 
+//    @Override
+//    public boolean setBrightness(int brightness) {
+//
+//        boolean b_set = SdkApi.getInstance().Display().setBrightness(ApiTool.Screen.ALL, brightness);
+//
+//        return b_set;
+//    }
+
     @Override
     public String getFirmwareVersion() {
-        //awaitReady();  // 在这里阻塞等待就绪（非 UI 线程调用）
+        // 如果未就绪，尝试等待（但不在UI线程阻塞）
+        if (!checkReady()) {
+            // 在非UI线程中可以等待，但在UI线程中直接返回
+            if (Looper.myLooper() != Looper.getMainLooper()) {
+                // 非UI线程，可以等待
+                if (awaitReady(3000)) {
+                    // 等待成功，继续执行
+                } else {
+                    return "未就绪";
+                }
+            } else {
+                // UI线程，不阻塞，直接返回
+                return "未就绪";
+            }
+        }
+
         if (!isInitialized || sdkApi == null || sdkApi.DeviceInfo() == null) {
             return "未知";
         }
@@ -126,7 +192,6 @@ public class SC1SdkImpl implements IsdkAPI {
             Log.e(TAG, "获取固件版本失败", e);
             return "获取失败";
         }
-
     }
 
     @Override
@@ -180,14 +245,5 @@ public class SC1SdkImpl implements IsdkAPI {
         return sdkApi.DeviceInfo().getEthMac();
     }
 
-    /**
-     * 设置屏幕亮度
-     * @param brightness（0-100）
-     * @return
-     */
-    @Override
-    public boolean setBrightness(int brightness) {
-        boolean b = sdkApi.Display().setBrightness(ApiTool.Screen.ALL, brightness);
-        return b;
-    }
+
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.suntek.mylibrary.devices.FS8SdkImpl;
 import com.suntek.mylibrary.devices.SC1SdkImpl;
+import com.suntek.mylibrary.devices.SK27_ESDKImpl;
 import com.suntek.mylibrary.devices.SK8SdkImpl;
 import com.suntek.mylibrary.devices.C9DSdkImpl;
 
@@ -15,7 +16,7 @@ import com.suntek.mylibrary.devices.C9DSdkImpl;
  */
 public class SDKFactory {
     private static final String TAG = "SDKFactory";
-    
+
     /**
      * 根据设备型号创建对应的SDK实例
      * @param context 上下文
@@ -25,9 +26,9 @@ public class SDKFactory {
         String deviceModel = Build.MODEL;
 
         DeviceType deviceType = DeviceType.fromModel(deviceModel);
-        
+
         Log.i(TAG, "检测到设备型号:~~~~~ " + deviceModel + ", 设备类型:~~~~~~ " + deviceType.getDescription());
-        
+
         IsdkAPI sdk = createSDKByType(deviceType);
         if (sdk != null) {
             sdk.init(context);
@@ -37,10 +38,10 @@ public class SDKFactory {
             Log.w(TAG, "未找到对应的SDK实现: " + deviceModel);
             return sdk;
         }
-        
+
 
     }
-    
+
     /**
      * 根据设备类型创建SDK实例
      * @param deviceType 设备类型
@@ -56,13 +57,16 @@ public class SDKFactory {
             case "LP":
                 Log.i(TAG, "创建SC1 SDK实例......");
                 return new SC1SdkImpl();
+            case "SK27-E":
+                Log.i(TAG,"创建SK27-E 实例");
+                return new SK27_ESDKImpl();
             default:
                 Log.w(TAG, "未知设备类型，返回默认SDK实现");
                 // 为未知设备返回一个默认实现或者null
                 return createDefaultSDK();
         }
     }
-    
+
     /**
      * 创建默认SDK实现（用于未知设备）
      * @return 默认SDK实例
@@ -74,7 +78,7 @@ public class SDKFactory {
         //return new FS8SdkImpl();
         return new C9DSdkImpl();
     }
-    
+
     /**
      * 检查指定设备类型是否受支持
      * @param deviceType 设备类型
@@ -83,16 +87,16 @@ public class SDKFactory {
     public static boolean isDeviceSupported(DeviceType deviceType) {
         return deviceType != DeviceType.UNKNOWN;
     }
-    
+
     /**
      * 获取所有支持的设备类型
      * @return 支持的设备类型数组
      */
     public static DeviceType[] getSupportedDevices() {
         return new DeviceType[]{
-            DeviceType.FS8,
-            DeviceType.SK8,
+                DeviceType.FS8,
+                DeviceType.SK8,
 
         };
     }
-} 
+}

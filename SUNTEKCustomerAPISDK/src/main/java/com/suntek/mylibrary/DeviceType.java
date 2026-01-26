@@ -12,7 +12,8 @@ public enum DeviceType {
     SC1_("LP", "SC1 device"),
     FA8("FA8","FA8 device"),
     FA10("FA10","FA10 device"),
-    LP("", "SC1 device"),
+    SK27E("SK27-E","SK27-E device"),
+
     UNKNOWN("UNKNOWN", "Unknown device");
     
     private final String model;

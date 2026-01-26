@@ -260,8 +260,8 @@ public class FS8SdkImpl implements IsdkAPI {
         return "";
     }
 
-    @Override
-    public boolean setBrightness(int brightness) {
-        return false;
-    }
+//    @Override
+//    public boolean setBrightness(int brightness) {
+//        return false;
+//    }
 } 
